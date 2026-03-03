@@ -455,23 +455,47 @@
     <div class="divider"></div>
 
     <div>
-      <div class="section-title">🎫 Ticket Sales</div>
+      <div class="section-title">🎫 Pre-sale Tickets</div>
       <div class="control-group">
         <div class="control-item">
-          <label>Pre-sale Tickets <span class="val" id="presale-val">100</span></label>
-          <input type="range" id="presale" min="0" max="500" value="100" oninput="update()">
+          <label>👨 Men — Count <span class="val" id="presale-m-val">50</span></label>
+          <input type="range" id="presale-m" min="0" max="500" value="50" oninput="update()">
         </div>
         <div class="control-item">
-          <label>Pre-sale Price (¥) <span class="val" id="presale-price-val">3,000</span></label>
-          <input type="range" id="presale-price" min="1000" max="8000" step="500" value="3000" oninput="update()">
+          <label>👨 Men — Price (¥) <span class="val" id="presale-m-price-val">3,500</span></label>
+          <input type="range" id="presale-m-price" min="500" max="10000" step="500" value="3500" oninput="update()">
         </div>
         <div class="control-item">
-          <label>Door Tickets <span class="val" id="door-val">50</span></label>
-          <input type="range" id="door" min="0" max="300" value="50" oninput="update()">
+          <label>👩 Women — Count <span class="val" id="presale-f-val">50</span></label>
+          <input type="range" id="presale-f" min="0" max="500" value="50" oninput="update()">
         </div>
         <div class="control-item">
-          <label>Door Price (¥) <span class="val" id="door-price-val">4,000</span></label>
-          <input type="range" id="door-price" min="1000" max="10000" step="500" value="4000" oninput="update()">
+          <label>👩 Women — Price (¥) <span class="val" id="presale-f-price-val">2,000</span></label>
+          <input type="range" id="presale-f-price" min="0" max="8000" step="500" value="2000" oninput="update()">
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="section-title">🚪 Door Tickets</div>
+      <div class="control-group">
+        <div class="control-item">
+          <label>👨 Men — Count <span class="val" id="door-m-val">25</span></label>
+          <input type="range" id="door-m" min="0" max="300" value="25" oninput="update()">
+        </div>
+        <div class="control-item">
+          <label>👨 Men — Price (¥) <span class="val" id="door-m-price-val">5,000</span></label>
+          <input type="range" id="door-m-price" min="500" max="15000" step="500" value="5000" oninput="update()">
+        </div>
+        <div class="control-item">
+          <label>👩 Women — Count <span class="val" id="door-f-val">25</span></label>
+          <input type="range" id="door-f" min="0" max="300" value="25" oninput="update()">
+        </div>
+        <div class="control-item">
+          <label>👩 Women — Price (¥) <span class="val" id="door-f-price-val">3,000</span></label>
+          <input type="range" id="door-f-price" min="0" max="10000" step="500" value="3000" oninput="update()">
         </div>
       </div>
     </div>
@@ -508,6 +532,22 @@
         <div class="control-item">
           <label>Late VIP subtotal (¥) <span class="val" id="late-val">0</span></label>
           <input type="range" id="late" min="0" max="500000" step="10000" value="0" oninput="update()">
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="section-title">📣 Promoters</div>
+      <div class="control-group">
+        <div class="control-item">
+          <label>People brought by promoters <span class="val" id="promo-pax-val">0</span></label>
+          <input type="range" id="promo-pax" min="0" max="200" value="0" oninput="update()">
+        </div>
+        <div class="control-item">
+          <label>Promoter fee per head (¥) <span class="val" id="promo-fee-val">500</span></label>
+          <input type="range" id="promo-fee" min="0" max="3000" step="100" value="500" oninput="update()">
         </div>
       </div>
     </div>
@@ -614,12 +654,20 @@
       <div class="breakdown-card">
         <h3><span class="dot" style="background:var(--accent)"></span>UVX Revenue Sources</h3>
         <div class="breakdown-row">
-          <span class="name">Pre-sale tickets (100%)</span>
-          <span class="val pos" id="b-presale">¥0</span>
+          <span class="name">Pre-sale — Men (100%)</span>
+          <span class="val pos" id="b-presale-m">¥0</span>
         </div>
         <div class="breakdown-row">
-          <span class="name">Door tickets (60%)</span>
-          <span class="val pos" id="b-door">¥0</span>
+          <span class="name">Pre-sale — Women (100%)</span>
+          <span class="val pos" id="b-presale-f">¥0</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="name">Door — Men (60%)</span>
+          <span class="val pos" id="b-door-m">¥0</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="name">Door — Women (60%)</span>
+          <span class="val pos" id="b-door-f">¥0</span>
         </div>
         <div class="breakdown-row">
           <span class="name">VIP bottles before midnight (60%)</span>
@@ -644,6 +692,10 @@
         <div class="breakdown-row">
           <span class="name">Cross cut — Door tickets (40%)</span>
           <span class="val neg" id="b-cross-door">¥0</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="name">Promoter fees</span>
+          <span class="val neg" id="b-promo">¥0</span>
         </div>
         <div class="breakdown-row">
           <span class="name">Cross cut — VIP bottles (40%)</span>
@@ -692,16 +744,27 @@
   function getVal(id) { return parseFloat(document.getElementById(id).value); }
 
   function update() {
-    const presaleCount = getVal('presale');
-    const presalePrice = getVal('presale-price');
-    const doorCount = getVal('door');
-    const doorPrice = getVal('door-price');
+    // Pre-sale
+    const presaleM = getVal('presale-m');
+    const presaleMPrice = getVal('presale-m-price');
+    const presaleF = getVal('presale-f');
+    const presaleFPrice = getVal('presale-f-price');
+    // Door
+    const doorM = getVal('door-m');
+    const doorMPrice = getVal('door-m-price');
+    const doorF = getVal('door-f');
+    const doorFPrice = getVal('door-f-price');
+    // VIP
     const domBottles = getVal('dom');
     const domPrice = getVal('dom-price');
     const vipBottles = getVal('vip');
     const vipPrice = getVal('vip-price');
     const lateSub = getVal('late');
     const merch = getVal('merch');
+    // Promoters
+    const promoPax = getVal('promo-pax');
+    const promoFee = getVal('promo-fee');
+    // Staff
     const d1 = getVal('d1');
     const d2 = getVal('d2');
     const d3 = getVal('d3');
@@ -709,40 +772,55 @@
     const dj2 = getVal('dj2');
     const otherCosts = getVal('other-costs');
 
-    // Update staff labels
-    document.getElementById('d1-val').textContent = d1;
-    document.getElementById('d2-val').textContent = d2;
-    document.getElementById('d3-val').textContent = d3;
-    document.getElementById('dj1-val').textContent = dj1;
-    document.getElementById('dj2-val').textContent = dj2;
-
-    // Update display labels
-    document.getElementById('presale-val').textContent = presaleCount;
-    document.getElementById('presale-price-val').textContent = presalePrice.toLocaleString('ja-JP');
-    document.getElementById('door-val').textContent = doorCount;
-    document.getElementById('door-price-val').textContent = doorPrice.toLocaleString('ja-JP');
+    // Update labels
+    document.getElementById('presale-m-val').textContent = presaleM;
+    document.getElementById('presale-m-price-val').textContent = presaleMPrice.toLocaleString('ja-JP');
+    document.getElementById('presale-f-val').textContent = presaleF;
+    document.getElementById('presale-f-price-val').textContent = presaleFPrice.toLocaleString('ja-JP');
+    document.getElementById('door-m-val').textContent = doorM;
+    document.getElementById('door-m-price-val').textContent = doorMPrice.toLocaleString('ja-JP');
+    document.getElementById('door-f-val').textContent = doorF;
+    document.getElementById('door-f-price-val').textContent = doorFPrice.toLocaleString('ja-JP');
     document.getElementById('dom-val').textContent = domBottles;
     document.getElementById('dom-price-val').textContent = domPrice.toLocaleString('ja-JP');
     document.getElementById('vip-val').textContent = vipBottles;
     document.getElementById('vip-price-val').textContent = vipPrice.toLocaleString('ja-JP');
     document.getElementById('late-val').textContent = lateSub.toLocaleString('ja-JP');
     document.getElementById('merch-val').textContent = merch.toLocaleString('ja-JP');
+    document.getElementById('promo-pax-val').textContent = promoPax;
+    document.getElementById('promo-fee-val').textContent = promoFee.toLocaleString('ja-JP');
+    document.getElementById('d1-val').textContent = d1;
+    document.getElementById('d2-val').textContent = d2;
+    document.getElementById('d3-val').textContent = d3;
+    document.getElementById('dj1-val').textContent = dj1;
+    document.getElementById('dj2-val').textContent = dj2;
     document.getElementById('other-costs-val').textContent = otherCosts.toLocaleString('ja-JP');
+
     // Revenue calcs
-    const revPresale = presaleCount * presalePrice;           // 100%
-    const revDoor = doorCount * doorPrice * 0.60;              // 60%
+    const revPresaleM = presaleM * presaleMPrice;
+    const revPresaleF = presaleF * presaleFPrice;
+    const revPresale = revPresaleM + revPresaleF;
+
+    const doorMSub = doorM * doorMPrice;
+    const doorFSub = doorF * doorFPrice;
+    const doorTotalSub = doorMSub + doorFSub;
+    const revDoorM = doorMSub * 0.60;
+    const revDoorF = doorFSub * 0.60;
+    const revDoor = revDoorM + revDoorF;
+
     const vipSub = (domBottles * domPrice) + (vipBottles * vipPrice);
-    const revVip = vipSub * 0.60;                              // 60%
-    const revLate = lateSub * 0.30;                            // 30%
-    const revMerch = merch;                                    // 100%
+    const revVip = vipSub * 0.60;
+    const revLate = lateSub * 0.30;
+    const revMerch = merch;
 
     const totalRev = revPresale + revDoor + revVip + revLate + revMerch;
 
     // Costs
-    const crossDoor = doorCount * doorPrice * 0.40;
+    const crossDoor = doorTotalSub * 0.40;
     const crossVip = vipSub * 0.40;
     const staffCost = (d1 * 30000) + (d2 * 20000) + (d3 * 20000) + (dj1 * 30000) + (dj2 * 20000);
-    const totalCosts = venueFee + otherCosts + staffCost;
+    const promoterCost = promoPax * promoFee;
+    const totalCosts = venueFee + otherCosts + staffCost + promoterCost;
 
     const net = totalRev - totalCosts;
 
@@ -761,7 +839,7 @@
     }
 
     // Breakeven bar
-    const pct = Math.min((totalRev / totalCosts) * 100, 100);
+    const pct = totalCosts > 0 ? Math.min((totalRev / totalCosts) * 100, 100) : 100;
     const bar = document.getElementById('be-bar');
     bar.style.width = pct + '%';
     bar.className = 'progress-bar-fill' + (pct >= 100 ? ' over' : '');
@@ -769,14 +847,17 @@
     document.getElementById('be-target').textContent = fmt(totalCosts) + ' needed';
 
     // Breakdown
-    document.getElementById('b-presale').textContent = fmt(revPresale);
-    document.getElementById('b-door').textContent = fmt(revDoor);
+    document.getElementById('b-presale-m').textContent = fmt(revPresaleM);
+    document.getElementById('b-presale-f').textContent = fmt(revPresaleF);
+    document.getElementById('b-door-m').textContent = fmt(revDoorM);
+    document.getElementById('b-door-f').textContent = fmt(revDoorF);
     document.getElementById('b-vip').textContent = fmt(revVip);
     document.getElementById('b-late').textContent = fmt(revLate);
     document.getElementById('b-merch').textContent = fmt(revMerch);
     document.getElementById('b-venue').textContent = fmt(venueFee);
     document.getElementById('b-cross-door').textContent = fmt(crossDoor);
     document.getElementById('b-cross-vip').textContent = fmt(crossVip);
+    document.getElementById('b-promo').textContent = fmt(promoterCost);
     document.getElementById('b-staff').textContent = fmt(staffCost);
 
     // Staff detail
@@ -796,11 +877,15 @@
 
     document.getElementById('b-other').textContent = fmt(otherCosts);
 
-    // Breakeven ticket calc
-    const needed = Math.max(0, totalCosts - revVip - revLate - revMerch);
-    const ticketsPresale = needed > 0 ? Math.ceil(needed / presalePrice) : 0;
-    const ticketsDoor = needed > 0 ? Math.ceil(needed / (doorPrice * 0.60)) : 0;
-    const mixEstimate = needed > 0 ? Math.ceil(needed / ((presalePrice + doorPrice * 0.60) / 2)) : 0;
+    // Breakeven ticket calc (avg blended per-head revenue from tickets)
+    const nonTicketRev = revVip + revLate + revMerch;
+    const needed = Math.max(0, totalCosts - nonTicketRev);
+    const avgPresaleRev = ((presaleM > 0 ? presaleMPrice : 0) + (presaleF > 0 ? presaleFPrice : 0)) / Math.max((presaleM > 0 ? 1 : 0) + (presaleF > 0 ? 1 : 0), 1);
+    const avgDoorRev = (((doorM > 0 ? doorMPrice : 0) + (doorF > 0 ? doorFPrice : 0)) / Math.max((doorM > 0 ? 1 : 0) + (doorF > 0 ? 1 : 0), 1)) * 0.60;
+    const blendedAvg = (avgPresaleRev + avgDoorRev) / 2;
+    const mixEstimate = blendedAvg > 0 && needed > 0 ? Math.ceil(needed / blendedAvg) : 0;
+    const ticketsPresale = avgPresaleRev > 0 && needed > 0 ? Math.ceil(needed / avgPresaleRev) : 0;
+    const ticketsDoor = avgDoorRev > 0 && needed > 0 ? Math.ceil(needed / avgDoorRev) : 0;
 
     document.getElementById('be-tickets').textContent = mixEstimate + ' tickets';
     document.getElementById('be-tickets-presale').textContent = ticketsPresale + ' pre-sale tickets';
