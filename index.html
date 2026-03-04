@@ -167,6 +167,101 @@
     background: var(--border);
   }
 
+  /* SPLITS PANEL */
+  .splits-toggle {
+    width: 100%;
+    background: rgba(123,97,255,0.08);
+    border: 1px solid rgba(123,97,255,0.25);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent3);
+    letter-spacing: 0.08em;
+    transition: background 0.15s;
+  }
+  .splits-toggle:hover { background: rgba(123,97,255,0.14); }
+  .splits-toggle .arrow { transition: transform 0.2s; font-size: 0.8rem; }
+  .splits-toggle.open .arrow { transform: rotate(180deg); }
+
+  .splits-panel {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(123,97,255,0.04);
+    border: 1px solid rgba(123,97,255,0.15);
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: -8px;
+  }
+  .splits-panel.open { display: flex; }
+
+  .split-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .split-row .split-label {
+    font-size: 0.78rem;
+    color: #aaa;
+    flex: 1;
+    line-height: 1.3;
+  }
+
+  .split-row .split-label small {
+    display: block;
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  .pct-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .pct-input-wrap input[type="number"] {
+    width: 46px;
+    background: none;
+    border: none;
+    color: var(--accent3);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-align: center;
+    padding: 5px 2px;
+    outline: none;
+    -moz-appearance: textfield;
+  }
+  .pct-input-wrap input[type="number"]::-webkit-inner-spin-button,
+  .pct-input-wrap input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .pct-input-wrap span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    padding-right: 7px;
+  }
+
+  .split-remainder {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    min-width: 60px;
+    text-align: right;
+  }
+
   /* MAIN */
   .main {
     padding: 28px 32px;
@@ -454,6 +549,64 @@
 
     <div class="divider"></div>
 
+    <!-- REVENUE SPLITS -->
+    <div>
+      <button class="splits-toggle" id="splits-toggle-btn" onclick="toggleSplits()">
+        <span>⚖ Revenue Split %</span>
+        <span class="arrow">▾</span>
+      </button>
+      <div class="splits-panel" id="splits-panel">
+
+        <div class="split-row">
+          <div class="split-label">Pre-sale tickets → UVX<small>Cross gets remainder</small></div>
+          <div class="pct-input-wrap">
+            <input type="number" id="pct-presale" min="0" max="100" value="100" oninput="clampPct(this);update()">
+            <span>%</span>
+          </div>
+          <div class="split-remainder" id="rem-presale">Cross: 0%</div>
+        </div>
+
+        <div class="split-row">
+          <div class="split-label">Door tickets → UVX<small>Cross gets remainder</small></div>
+          <div class="pct-input-wrap">
+            <input type="number" id="pct-door" min="0" max="100" value="60" oninput="clampPct(this);update()">
+            <span>%</span>
+          </div>
+          <div class="split-remainder" id="rem-door">Cross: 40%</div>
+        </div>
+
+        <div class="split-row">
+          <div class="split-label">VIP bottles (before midnight) → UVX<small>Cross gets remainder</small></div>
+          <div class="pct-input-wrap">
+            <input type="number" id="pct-vip" min="0" max="100" value="60" oninput="clampPct(this);update()">
+            <span>%</span>
+          </div>
+          <div class="split-remainder" id="rem-vip">Cross: 40%</div>
+        </div>
+
+        <div class="split-row">
+          <div class="split-label">VIP after midnight → UVX<small>Cross keeps 100% of their customers</small></div>
+          <div class="pct-input-wrap">
+            <input type="number" id="pct-late" min="0" max="100" value="30" oninput="clampPct(this);update()">
+            <span>%</span>
+          </div>
+          <div class="split-remainder" id="rem-late">Cross: 70%</div>
+        </div>
+
+        <div class="split-row">
+          <div class="split-label">Food & Merch → UVX<small>Cross gets remainder</small></div>
+          <div class="pct-input-wrap">
+            <input type="number" id="pct-merch" min="0" max="100" value="100" oninput="clampPct(this);update()">
+            <span>%</span>
+          </div>
+          <div class="split-remainder" id="rem-merch">Cross: 0%</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
     <div>
       <div class="section-title">🎫 Pre-sale Tickets</div>
       <div class="control-group">
@@ -654,31 +807,31 @@
       <div class="breakdown-card">
         <h3><span class="dot" style="background:var(--accent)"></span>UVX Revenue Sources</h3>
         <div class="breakdown-row">
-          <span class="name">Pre-sale — Men (100%)</span>
+          <span class="name" id="lbl-presale-m">Pre-sale — Men</span>
           <span class="val pos" id="b-presale-m">¥0</span>
         </div>
         <div class="breakdown-row">
-          <span class="name">Pre-sale — Women (100%)</span>
+          <span class="name" id="lbl-presale-f">Pre-sale — Women</span>
           <span class="val pos" id="b-presale-f">¥0</span>
         </div>
         <div class="breakdown-row">
-          <span class="name">Door — Men (60%)</span>
+          <span class="name" id="lbl-door-m">Door — Men</span>
           <span class="val pos" id="b-door-m">¥0</span>
         </div>
         <div class="breakdown-row">
-          <span class="name">Door — Women (60%)</span>
+          <span class="name" id="lbl-door-f">Door — Women</span>
           <span class="val pos" id="b-door-f">¥0</span>
         </div>
         <div class="breakdown-row">
-          <span class="name">VIP bottles before midnight (60%)</span>
+          <span class="name" id="lbl-vip">VIP bottles before midnight</span>
           <span class="val pos" id="b-vip">¥0</span>
         </div>
         <div class="breakdown-row">
-          <span class="name">VIP after midnight (30%)</span>
+          <span class="name" id="lbl-late">VIP after midnight</span>
           <span class="val pos" id="b-late">¥0</span>
         </div>
         <div class="breakdown-row">
-          <span class="name">Food & Merch (100%)</span>
+          <span class="name" id="lbl-merch">Food & Merch</span>
           <span class="val pos" id="b-merch">¥0</span>
         </div>
       </div>
@@ -690,7 +843,7 @@
           <span class="val neg" id="b-venue">¥0</span>
         </div>
         <div class="breakdown-row">
-          <span class="name">Cross cut — Door tickets (40%)</span>
+          <span class="name" id="lbl-cross-door">Cross cut — Door tickets</span>
           <span class="val neg" id="b-cross-door">¥0</span>
         </div>
         <div class="breakdown-row">
@@ -698,7 +851,7 @@
           <span class="val neg" id="b-promo">¥0</span>
         </div>
         <div class="breakdown-row">
-          <span class="name">Cross cut — VIP bottles (40%)</span>
+          <span class="name" id="lbl-cross-vip">Cross cut — VIP bottles</span>
           <span class="val neg" id="b-cross-vip">¥0</span>
         </div>
         <div class="breakdown-row">
@@ -737,159 +890,173 @@
     update();
   }
 
-  function fmt(n) {
-    return '¥' + Math.round(n).toLocaleString('ja-JP');
+  function toggleSplits() {
+    const btn   = document.getElementById('splits-toggle-btn');
+    const panel = document.getElementById('splits-panel');
+    btn.classList.toggle('open');
+    panel.classList.toggle('open');
   }
 
-  function getVal(id) { return parseFloat(document.getElementById(id).value); }
+  function clampPct(el) {
+    let v = parseFloat(el.value);
+    if (isNaN(v)) v = 0;
+    el.value = Math.min(100, Math.max(0, v));
+  }
+
+  function fmt(n) { return '¥' + Math.round(n).toLocaleString('ja-JP'); }
+  function getVal(id) { return parseFloat(document.getElementById(id).value) || 0; }
+  function getPct(id) { return getVal(id) / 100; }
 
   function update() {
-    // Pre-sale
-    const presaleM = getVal('presale-m');
-    const presaleMPrice = getVal('presale-m-price');
-    const presaleF = getVal('presale-f');
-    const presaleFPrice = getVal('presale-f-price');
-    // Door
-    const doorM = getVal('door-m');
-    const doorMPrice = getVal('door-m-price');
-    const doorF = getVal('door-f');
-    const doorFPrice = getVal('door-f-price');
-    // VIP
-    const domBottles = getVal('dom');
-    const domPrice = getVal('dom-price');
-    const vipBottles = getVal('vip');
-    const vipPrice = getVal('vip-price');
-    const lateSub = getVal('late');
-    const merch = getVal('merch');
-    // Promoters
-    const promoPax = getVal('promo-pax');
-    const promoFee = getVal('promo-fee');
-    // Staff
-    const d1 = getVal('d1');
-    const d2 = getVal('d2');
-    const d3 = getVal('d3');
-    const dj1 = getVal('dj1');
-    const dj2 = getVal('dj2');
+    // Live splits
+    const pPresale = getPct('pct-presale');
+    const pDoor    = getPct('pct-door');
+    const pVip     = getPct('pct-vip');
+    const pLate    = getPct('pct-late');
+    const pMerch   = getPct('pct-merch');
+
+    // Remainder labels
+    const remLabel = (p) => `Cross: ${Math.round((1 - p) * 100)}%`;
+    document.getElementById('rem-presale').textContent = remLabel(pPresale);
+    document.getElementById('rem-door').textContent    = remLabel(pDoor);
+    document.getElementById('rem-vip').textContent     = remLabel(pVip);
+    document.getElementById('rem-late').textContent    = `Cross: ${Math.round((1 - pLate) * 100)}%`;
+    document.getElementById('rem-merch').textContent   = remLabel(pMerch);
+
+    // Dynamic breakdown labels
+    const pp = (v) => `${Math.round(v * 100)}%`;
+    document.getElementById('lbl-presale-m').textContent  = `Pre-sale — Men (${pp(pPresale)})`;
+    document.getElementById('lbl-presale-f').textContent  = `Pre-sale — Women (${pp(pPresale)})`;
+    document.getElementById('lbl-door-m').textContent     = `Door — Men (${pp(pDoor)})`;
+    document.getElementById('lbl-door-f').textContent     = `Door — Women (${pp(pDoor)})`;
+    document.getElementById('lbl-vip').textContent        = `VIP bottles before midnight (${pp(pVip)})`;
+    document.getElementById('lbl-late').textContent       = `VIP after midnight (${pp(pLate)})`;
+    document.getElementById('lbl-merch').textContent      = `Food & Merch (${pp(pMerch)})`;
+    document.getElementById('lbl-cross-door').textContent = `Cross cut — Door tickets (${pp(1 - pDoor)})`;
+    document.getElementById('lbl-cross-vip').textContent  = `Cross cut — VIP bottles (${pp(1 - pVip)})`;
+
+    // Inputs
+    const presaleM = getVal('presale-m'), presaleMPrice = getVal('presale-m-price');
+    const presaleF = getVal('presale-f'), presaleFPrice = getVal('presale-f-price');
+    const doorM    = getVal('door-m'),    doorMPrice    = getVal('door-m-price');
+    const doorF    = getVal('door-f'),    doorFPrice    = getVal('door-f-price');
+    const domBottles = getVal('dom'),     domPrice      = getVal('dom-price');
+    const vipBottles = getVal('vip'),     vipPrice      = getVal('vip-price');
+    const lateSub  = getVal('late');
+    const merch    = getVal('merch');
+    const promoPax = getVal('promo-pax'), promoFee = getVal('promo-fee');
+    const d1 = getVal('d1'), d2 = getVal('d2'), d3 = getVal('d3');
+    const dj1 = getVal('dj1'), dj2 = getVal('dj2');
     const otherCosts = getVal('other-costs');
 
-    // Update labels
-    document.getElementById('presale-m-val').textContent = presaleM;
+    // Slider display labels
+    document.getElementById('presale-m-val').textContent       = presaleM;
     document.getElementById('presale-m-price-val').textContent = presaleMPrice.toLocaleString('ja-JP');
-    document.getElementById('presale-f-val').textContent = presaleF;
+    document.getElementById('presale-f-val').textContent       = presaleF;
     document.getElementById('presale-f-price-val').textContent = presaleFPrice.toLocaleString('ja-JP');
-    document.getElementById('door-m-val').textContent = doorM;
-    document.getElementById('door-m-price-val').textContent = doorMPrice.toLocaleString('ja-JP');
-    document.getElementById('door-f-val').textContent = doorF;
-    document.getElementById('door-f-price-val').textContent = doorFPrice.toLocaleString('ja-JP');
-    document.getElementById('dom-val').textContent = domBottles;
-    document.getElementById('dom-price-val').textContent = domPrice.toLocaleString('ja-JP');
-    document.getElementById('vip-val').textContent = vipBottles;
-    document.getElementById('vip-price-val').textContent = vipPrice.toLocaleString('ja-JP');
-    document.getElementById('late-val').textContent = lateSub.toLocaleString('ja-JP');
-    document.getElementById('merch-val').textContent = merch.toLocaleString('ja-JP');
-    document.getElementById('promo-pax-val').textContent = promoPax;
-    document.getElementById('promo-fee-val').textContent = promoFee.toLocaleString('ja-JP');
-    document.getElementById('d1-val').textContent = d1;
-    document.getElementById('d2-val').textContent = d2;
-    document.getElementById('d3-val').textContent = d3;
-    document.getElementById('dj1-val').textContent = dj1;
-    document.getElementById('dj2-val').textContent = dj2;
-    document.getElementById('other-costs-val').textContent = otherCosts.toLocaleString('ja-JP');
+    document.getElementById('door-m-val').textContent          = doorM;
+    document.getElementById('door-m-price-val').textContent    = doorMPrice.toLocaleString('ja-JP');
+    document.getElementById('door-f-val').textContent          = doorF;
+    document.getElementById('door-f-price-val').textContent    = doorFPrice.toLocaleString('ja-JP');
+    document.getElementById('dom-val').textContent             = domBottles;
+    document.getElementById('dom-price-val').textContent       = domPrice.toLocaleString('ja-JP');
+    document.getElementById('vip-val').textContent             = vipBottles;
+    document.getElementById('vip-price-val').textContent       = vipPrice.toLocaleString('ja-JP');
+    document.getElementById('late-val').textContent            = lateSub.toLocaleString('ja-JP');
+    document.getElementById('merch-val').textContent           = merch.toLocaleString('ja-JP');
+    document.getElementById('promo-pax-val').textContent       = promoPax;
+    document.getElementById('promo-fee-val').textContent       = promoFee.toLocaleString('ja-JP');
+    document.getElementById('d1-val').textContent              = d1;
+    document.getElementById('d2-val').textContent              = d2;
+    document.getElementById('d3-val').textContent              = d3;
+    document.getElementById('dj1-val').textContent             = dj1;
+    document.getElementById('dj2-val').textContent             = dj2;
+    document.getElementById('other-costs-val').textContent     = otherCosts.toLocaleString('ja-JP');
 
-    // Revenue calcs
-    const revPresaleM = presaleM * presaleMPrice;
-    const revPresaleF = presaleF * presaleFPrice;
-    const revPresale = revPresaleM + revPresaleF;
-
-    const doorMSub = doorM * doorMPrice;
-    const doorFSub = doorF * doorFPrice;
+    // Revenue with live splits
+    const revPresaleM  = presaleM * presaleMPrice * pPresale;
+    const revPresaleF  = presaleF * presaleFPrice * pPresale;
+    const revPresale   = revPresaleM + revPresaleF;
+    const doorMSub     = doorM * doorMPrice;
+    const doorFSub     = doorF * doorFPrice;
     const doorTotalSub = doorMSub + doorFSub;
-    const revDoorM = doorMSub * 0.60;
-    const revDoorF = doorFSub * 0.60;
-    const revDoor = revDoorM + revDoorF;
-
-    const vipSub = (domBottles * domPrice) + (vipBottles * vipPrice);
-    const revVip = vipSub * 0.60;
-    const revLate = lateSub * 0.30;
-    const revMerch = merch;
-
-    const totalRev = revPresale + revDoor + revVip + revLate + revMerch;
+    const revDoorM     = doorMSub * pDoor;
+    const revDoorF     = doorFSub * pDoor;
+    const revDoor      = revDoorM + revDoorF;
+    const vipSub       = (domBottles * domPrice) + (vipBottles * vipPrice);
+    const revVip       = vipSub * pVip;
+    const revLate      = lateSub * pLate;
+    const revMerch     = merch * pMerch;
+    const totalRev     = revPresale + revDoor + revVip + revLate + revMerch;
 
     // Costs
-    const crossDoor = doorTotalSub * 0.40;
-    const crossVip = vipSub * 0.40;
-    const staffCost = (d1 * 30000) + (d2 * 20000) + (d3 * 20000) + (dj1 * 30000) + (dj2 * 20000);
+    const crossDoor    = doorTotalSub * (1 - pDoor);
+    const crossVip     = vipSub * (1 - pVip);
+    const staffCost    = (d1*30000) + (d2*20000) + (d3*20000) + (dj1*30000) + (dj2*20000);
     const promoterCost = promoPax * promoFee;
-    const totalCosts = venueFee + otherCosts + staffCost + promoterCost;
+    const totalCosts   = venueFee + otherCosts + staffCost + promoterCost;
+    const net          = totalRev - totalCosts;
 
-    const net = totalRev - totalCosts;
-
-    // Update hero
+    // Hero
     document.getElementById('total-rev').textContent = fmt(totalRev);
     document.getElementById('total-costs').textContent = fmt(totalCosts);
     const netEl = document.getElementById('net-profit');
     netEl.textContent = fmt(net);
     netEl.className = 'amount ' + (net >= 0 ? 'positive' : 'negative');
-
-    const badge = document.getElementById('profit-badge');
-    if (net >= 0) {
-      badge.innerHTML = `<span class="status-badge profit"><span class="dot"></span>IN PROFIT</span>`;
-    } else {
-      badge.innerHTML = `<span class="status-badge loss"><span class="dot"></span>${fmt(Math.abs(net))} SHORT</span>`;
-    }
+    document.getElementById('profit-badge').innerHTML = net >= 0
+      ? `<span class="status-badge profit"><span class="dot"></span>IN PROFIT</span>`
+      : `<span class="status-badge loss"><span class="dot"></span>${fmt(Math.abs(net))} SHORT</span>`;
 
     // Breakeven bar
     const pct = totalCosts > 0 ? Math.min((totalRev / totalCosts) * 100, 100) : 100;
     const bar = document.getElementById('be-bar');
     bar.style.width = pct + '%';
     bar.className = 'progress-bar-fill' + (pct >= 100 ? ' over' : '');
-    document.getElementById('be-pct').textContent = Math.round(pct) + '% covered';
+    document.getElementById('be-pct').textContent    = Math.round(pct) + '% covered';
     document.getElementById('be-target').textContent = fmt(totalCosts) + ' needed';
 
     // Breakdown
-    document.getElementById('b-presale-m').textContent = fmt(revPresaleM);
-    document.getElementById('b-presale-f').textContent = fmt(revPresaleF);
-    document.getElementById('b-door-m').textContent = fmt(revDoorM);
-    document.getElementById('b-door-f').textContent = fmt(revDoorF);
-    document.getElementById('b-vip').textContent = fmt(revVip);
-    document.getElementById('b-late').textContent = fmt(revLate);
-    document.getElementById('b-merch').textContent = fmt(revMerch);
-    document.getElementById('b-venue').textContent = fmt(venueFee);
+    document.getElementById('b-presale-m').textContent  = fmt(revPresaleM);
+    document.getElementById('b-presale-f').textContent  = fmt(revPresaleF);
+    document.getElementById('b-door-m').textContent     = fmt(revDoorM);
+    document.getElementById('b-door-f').textContent     = fmt(revDoorF);
+    document.getElementById('b-vip').textContent        = fmt(revVip);
+    document.getElementById('b-late').textContent       = fmt(revLate);
+    document.getElementById('b-merch').textContent      = fmt(revMerch);
+    document.getElementById('b-venue').textContent      = fmt(venueFee);
     document.getElementById('b-cross-door').textContent = fmt(crossDoor);
-    document.getElementById('b-cross-vip').textContent = fmt(crossVip);
-    document.getElementById('b-promo').textContent = fmt(promoterCost);
-    document.getElementById('b-staff').textContent = fmt(staffCost);
+    document.getElementById('b-cross-vip').textContent  = fmt(crossVip);
+    document.getElementById('b-promo').textContent      = fmt(promoterCost);
+    document.getElementById('b-staff').textContent      = fmt(staffCost);
 
     // Staff detail
     const staffRow = document.getElementById('staff-detail-row');
     const staffParts = [];
-    if (d1 > 0) staffParts.push(`${d1}× Dancer L1`);
-    if (d2 > 0) staffParts.push(`${d2}× Back Dancer`);
-    if (d3 > 0) staffParts.push(`${d3}× Champ. Girl`);
+    if (d1  > 0) staffParts.push(`${d1}× Dancer L1`);
+    if (d2  > 0) staffParts.push(`${d2}× Back Dancer`);
+    if (d3  > 0) staffParts.push(`${d3}× Champ. Girl`);
     if (dj1 > 0) staffParts.push(`${dj1}× DJ L1`);
     if (dj2 > 0) staffParts.push(`${dj2}× DJ L2`);
-    if (staffParts.length > 0) {
-      staffRow.style.display = 'flex';
-      document.getElementById('staff-detail-text').textContent = staffParts.join(' · ');
-    } else {
-      staffRow.style.display = 'none';
-    }
+    staffRow.style.display = staffParts.length > 0 ? 'flex' : 'none';
+    if (staffParts.length > 0) document.getElementById('staff-detail-text').textContent = staffParts.join(' · ');
 
     document.getElementById('b-other').textContent = fmt(otherCosts);
 
-    // Breakeven ticket calc (avg blended per-head revenue from tickets)
-    const nonTicketRev = revVip + revLate + revMerch;
-    const needed = Math.max(0, totalCosts - nonTicketRev);
-    const avgPresaleRev = ((presaleM > 0 ? presaleMPrice : 0) + (presaleF > 0 ? presaleFPrice : 0)) / Math.max((presaleM > 0 ? 1 : 0) + (presaleF > 0 ? 1 : 0), 1);
-    const avgDoorRev = (((doorM > 0 ? doorMPrice : 0) + (doorF > 0 ? doorFPrice : 0)) / Math.max((doorM > 0 ? 1 : 0) + (doorF > 0 ? 1 : 0), 1)) * 0.60;
-    const blendedAvg = (avgPresaleRev + avgDoorRev) / 2;
-    const mixEstimate = blendedAvg > 0 && needed > 0 ? Math.ceil(needed / blendedAvg) : 0;
+    // Breakeven ticket calc
+    const nonTicketRev   = revVip + revLate + revMerch;
+    const needed         = Math.max(0, totalCosts - nonTicketRev);
+    const avgPresaleRev  = ((presaleM > 0 ? presaleMPrice * pPresale : 0) + (presaleF > 0 ? presaleFPrice * pPresale : 0))
+                           / Math.max((presaleM > 0 ? 1 : 0) + (presaleF > 0 ? 1 : 0), 1);
+    const avgDoorRev     = (((doorM > 0 ? doorMPrice : 0) + (doorF > 0 ? doorFPrice : 0))
+                           / Math.max((doorM > 0 ? 1 : 0) + (doorF > 0 ? 1 : 0), 1)) * pDoor;
+    const blendedAvg     = (avgPresaleRev + avgDoorRev) / 2;
+    const mixEstimate    = blendedAvg > 0 && needed > 0 ? Math.ceil(needed / blendedAvg) : 0;
     const ticketsPresale = avgPresaleRev > 0 && needed > 0 ? Math.ceil(needed / avgPresaleRev) : 0;
-    const ticketsDoor = avgDoorRev > 0 && needed > 0 ? Math.ceil(needed / avgDoorRev) : 0;
+    const ticketsDoor    = avgDoorRev > 0    && needed > 0 ? Math.ceil(needed / avgDoorRev) : 0;
 
-    document.getElementById('be-tickets').textContent = mixEstimate + ' tickets';
+    document.getElementById('be-tickets').textContent         = mixEstimate + ' tickets';
     document.getElementById('be-tickets-presale').textContent = ticketsPresale + ' pre-sale tickets';
-    document.getElementById('be-tickets-door').textContent = ticketsDoor + ' door tickets';
+    document.getElementById('be-tickets-door').textContent    = ticketsDoor + ' door tickets';
   }
 
   update();
